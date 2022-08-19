@@ -1,6 +1,8 @@
 /*eslint-disable*/
 import React, { useState } from 'react';
+import ActorGrid from '../components/actor/ActorGrid';
 import MainPageLayout from '../components/MainPageLayout';
+import ShowGrid from '../components/show/ShowGrid';
 import { apiGet } from '../misc/config';
 
 const Home = () => {
@@ -8,7 +10,7 @@ const Home = () => {
   const [results, setResults] = useState(null);
   const [searchOption, setSearchOption] = useState('shows');
 
-  const isShowsSearch = searchOption === 'shows'; 
+  const isShowsSearch = searchOption === 'shows';
 
   const onSearch = () => {
     apiGet(`/search/${searchOption}?q=${input}`).then(result => {
@@ -26,7 +28,7 @@ const Home = () => {
     }
   };
 
-  const onRadioChange = (ev) => {
+  const onRadioChange = ev => {
     setSearchOption(ev.target.value);
   };
   console.log(searchOption);
@@ -37,11 +39,11 @@ const Home = () => {
     }
 
     if (results && results.length > 0) {
-      return results[0].show ? results.map(item => (
-        <div key={item.show.id}>{item.show.name}</div>
-      )) : results.map(item => (
-        <div key={item.person.id}>{item.person.name}</div>
-      ))
+      return results[0].show ? (
+        <ShowGrid data={results} />
+      ) : (
+        <ActorGrid data={results} />
+      );
     }
 
     return null;
@@ -60,24 +62,25 @@ const Home = () => {
       <div>
         <label htmlFor="shows-search">
           Shows
-          <input 
-            id="shows-search" 
-            type="radio" value="shows" 
+          <input
+            id="shows-search"
+            type="radio"
+            value="shows"
             checked={isShowsSearch}
-            onChange={onRadioChange} 
-            />
+            onChange={onRadioChange}
+          />
         </label>
 
         <label htmlFor="actors-search">
           Actors
-          <input 
-            id="actors-search" 
-            type="radio" value="people"
-            checked={!isShowsSearch} 
+          <input
+            id="actors-search"
+            type="radio"
+            value="people"
+            checked={!isShowsSearch}
             onChange={onRadioChange}
-            /> 
+          />
         </label>
-
       </div>
       <button type="button" onClick={onSearch}>
         Search
