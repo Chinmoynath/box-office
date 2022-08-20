@@ -1,24 +1,48 @@
 /*eslint-disable*/
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { apiGet } from '../misc/config';
 
 const Show = () => {
+  const { id } = useParams();
 
-   const { id } = useParams();
+  const [show, setShow] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-   const [show, setShow] = useState(null);
+  useEffect(() => {
+    let isMounted = true;
 
-   useEffect(() => {
-    apiGet(`/shows/${id}?embed[]=seasons&embed[]=cast`).then(results => {
-        setShow(results);
-    });
-   }, [id]);
+    apiGet(`/shows/${id}?embed[]=seasons&embed[]=cast`)
+      .then(results => {
+        if (isMounted) {
+          setShow(results);
+          setIsLoading(false);
+        }
+      })
+      .catch(err => {
+        if (isMounted) {
+          setError(err.message);
+          setIsLoading(false);
+        }
+      });
 
-   console.log('show', show);
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
-  return <div>this is a show</div>;
+  console.log('show', show);
 
+  if (isLoading) {
+    return <div>Data is being loaded</div>;
+  }
+
+  if (error) {
+    return <div>Error occurred: {error}</div>;
+  }
+
+  return <div>this is a show page</div>;
 };
 
 export default Show;
