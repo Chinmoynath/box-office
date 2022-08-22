@@ -8,7 +8,7 @@ function showsReducer(prevState, action) {
     }
 
     case 'REMOVE': {
-      return prevState.filter((showId) => showId !== action.showId);
+      return prevState.filter(showId => showId !== action.showId);
     }
 
     default:
@@ -30,8 +30,6 @@ function usePersistedReducer(reducer, initialState, key) {
   return [state, dispatch];
 }
 
-export function useShow(key = 'shows') {
+export function useShows(key = 'shows') {
   return usePersistedReducer(showsReducer, [], key);
 }
-
-//for storing data
